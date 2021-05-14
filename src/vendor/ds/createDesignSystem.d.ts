@@ -13,7 +13,10 @@ export declare type OptionsListConfig = {
     style: "separated" | "rows";
     requireRestart?: true;
 };
+export declare type DesignSystem = ReturnType<ReturnType<typeof createDesignSystem>>;
 export declare const createDesignSystem: (sandbox: Sandbox) => (container: Element) => {
+    /** The element of the design system */
+    container: Element;
     /** Clear the sidebar */
     clear: () => void;
     /** Present code in a pre > code  */
@@ -62,4 +65,8 @@ export declare const createDesignSystem: (sandbox: Sandbox) => (container: Eleme
     createTabButton: (text: string) => HTMLButtonElement;
     /** A general "restart your browser" message  */
     declareRestartRequired: (i?: ((key: string) => string) | undefined) => void;
+    /** Create a new Design System instance and add it to the container. You'll need to cast
+     * this after usage, because otherwise the type-system circularly references itself
+     */
+    createSubDesignSystem: () => any;
 };

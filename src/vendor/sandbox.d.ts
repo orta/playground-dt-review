@@ -247,6 +247,8 @@ export declare const createTypeScriptSandbox: (partialConfig: Partial<SandboxCon
     languageServiceDefaults: import("monaco-editor").languages.typescript.LanguageServiceDefaults;
     /** The path which represents the current file using the current compiler options */
     filepath: string;
+    /** Adds a file to the vfs used by the editor */
+    addLibraryToRuntime: (code: string, path: string) => void;
 };
 export declare type Sandbox = ReturnType<typeof createTypeScriptSandbox>;
 export {};

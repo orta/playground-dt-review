@@ -12,6 +12,7 @@ export declare const createUtils: (sb: any, react: typeof React) => {
      * element to the container you pass into the first param, and return the HTMLElement
      */
     createDesignSystem: (container: Element) => {
+        container: Element;
         clear: () => void;
         code: (code: string) => HTMLElement;
         title: (title: string) => HTMLElement;
@@ -41,6 +42,7 @@ export declare const createUtils: (sb: any, react: typeof React) => {
         createTabBar: () => HTMLDivElement;
         createTabButton: (text: string) => HTMLButtonElement;
         declareRestartRequired: (i?: ((key: string) => string) | undefined) => void;
+        createSubDesignSystem: () => any;
     };
     /** Flashes a HTML Element */
     flashHTMLElement: (element: HTMLElement) => void;
