@@ -3,8 +3,8 @@ import type { DesignSystem } from "./vendor/ds/createDesignSystem"
 import type { PackageInfo, PR, PrInfo, PR_repository_pullRequest } from "./dt-mergebot-types"
 import { Sandbox } from "./vendor/sandbox"
 
-const dev = true
-const url = dev ? "http://localhost:7071/" : ""
+const dev = false
+const url = dev ? "http://localhost:7071/" : "https://dtmergebot.azurewebsites.net/"
 const dtBotInfo = (prNum: number) => fetch(url + "api/Playground-Info?number=" + prNum)
 
 const makePlugin = (utils: PluginUtils) => {
@@ -119,8 +119,10 @@ const infoForPackage  = (sandbox: Sandbox, pr: PR_repository_pullRequest, ds: De
 
 
 function showEmptyScreen(ds: DesignSystem) {
-  ds.subtitle("Setup issue")
-  ds.p("You somehow have lost the param telling this plugin which DT Pull Request number you want to look at. You can set it manually by getting the number, and adding <code>dtPR=112233</code> to the URL of this page, then re-load.")
+  ds.subtitle("Not configured to show PR")
+
+  ds.p("You can use this plugin to review WIP changes to types from <a href='https://github.com/DefinitelyTyped/DefinitelyTyped/pulls'>DefinitelyTyped</a>.")
+  ds.p("This plugin isn't configured to run a Pull Request however. You can set the PR number manually by adding <code>dtPR=112233</code> to the URL of this page, then re-load. The general workflow assumes that you would load this plugin automatically via a link in the pull request from the bot.")
 }
 
 export default makePlugin
