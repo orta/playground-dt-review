@@ -20,7 +20,7 @@ const makePlugin = (utils: PluginUtils) => {
       const params = new URLSearchParams(window.location.search)
       const dtPRNumber = params.get("dtPR") 
 
-      ds.title("DT Pull Request Explorer")
+      ds.title("DT Pull Request Reviewer")
       if (!dtPRNumber) return showEmptyScreen(ds)
     
       const contentDS: DesignSystem = ds.createSubDesignSystem()
@@ -123,8 +123,10 @@ const infoForPackage  = (sandbox: Sandbox, pr: DTBotJSON, ds: DesignSystem) => (
 
 
 function showEmptyScreen(ds: DesignSystem) {
-  ds.subtitle("Not set up")
-  ds.p("If this is your first time, welcome! This extension requires a DefinitelyTyped PR number to get started, to get set up, go to the DefinitelyTyped.")
+  ds.subtitle("Not set up for a PR")
+  ds.p("If this is your first time using the DT Review plugin, welcome! This plugin requires a DefinitelyTyped PR number (via <code>?dtPR=12345</code> in the URL) to get started.")
+  ds.p("You can either set it up manually in your browser and reload, or go to the <a href='https://github.com/DefinitelyTyped/DefinitelyTyped/pulls'>DefinitelyTyped PRs</a> and find the one you want to review.")
 }
 
 export default makePlugin
+
