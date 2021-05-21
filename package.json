@@ -1,8 +1,8 @@
 {
   "name": "playground-dt-review",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "main": "dist/index.js",
-  "description": "My playground plugin",
+  "description": "Makes reviewing DefinitelyTyped PRs easier",
   "license": "MIT",
   "keywords": [
     "playground-plugin"
