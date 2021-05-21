@@ -21,7 +21,8 @@ Then it will show up as a tab in the sidebar.
 See [CONTRIBUTING.md](./CONTRIBUTING.md) for the full details, however, TLDR:
 
 ```sh
-git clone ...
+git clone https://github.com/orta/playground-dt-review.git
+cd playground-dt-review
 yarn install
 yarn start
 ```

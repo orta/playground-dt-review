@@ -1,11 +1,14 @@
 import type { PlaygroundPlugin, PluginUtils } from "./vendor/playground"
 import type { DesignSystem } from "./vendor/ds/createDesignSystem"
-import type { PackageInfo, PR, PrInfo, PR_repository_pullRequest } from "./dt-mergebot-types"
+import type {  DTBotJSON, PkgInfo } from "./dt-mergebot-types"
 import { Sandbox } from "./vendor/sandbox"
 
-const dev = true
-const url = dev ? "http://localhost:7071/" : ""
-const dtBotInfo = (prNum: number) => fetch(url + "api/Playground-Info?number=" + prNum)
+const dev = false
+const url = dev ? "http://localhost:7071/" : "https://dtmergebot.azurewebsites.net/"
+// We use `code` as a way to disallow people from arbitrary calling our functions on
+// this API. However, in this case it is OK for it to be public.
+const extraParams = dev ? "" : "&code=SAaE6vParL2N6JCQoG9iA3TZHGhDNsr61aZjF6IF2pAXy2YYaZnm1w=="
+const dtBotInfo = (prNum: number) => fetch(`${url}api/Playground-Info?number=${prNum}${extraParams}`)
 
 const makePlugin = (utils: PluginUtils) => {
   const customPlugin: PlaygroundPlugin = {
@@ -24,18 +27,19 @@ const makePlugin = (utils: PluginUtils) => {
       contentDS.subtitle(`Loading PR ${dtPRNumber}`)
 
       const response = await dtBotInfo(Number(dtPRNumber))
-      const json = await response.json() as { state: PrInfo, info:{ data: PR }}
-      const pr = json.info.data.repository.pullRequest
+      const json = await response.json() as DTBotJSON
+      console.log(JSON.stringify(json))
+
       const aPRID = `<a href='https://github.com/DefinitelyTyped/DefinitelyTyped/pull/${dtPRNumber}'>#${dtPRNumber}</a>`
-      const author = `<a href='https://github.com/${pr.author.login}'>@${pr.author.login}</a>`
+      const author = `<a href='https://github.com/${json.author}'>@${json.author}</a>`
      
       contentDS.clear()
-      contentDS.subtitle(`Looking at ${aPRID} ${pr.title} by ${author}`)
+      contentDS.subtitle(`Looking at ${aPRID} ${json.title} by ${author}`)
       contentDS.p("This plugin injects the changes from a Pull Request to DefinitelyTyped into the Playground's environment. You can then <code>import</code> the new version. It should support any PR which adds or edits existing modules.")
 
-      json.state.pkgInfo.forEach((pkg) => {
+      json.pkgInfo.forEach((pkg) => {
         contentDS.subtitle(pkg.name)
-        infoForPackage(sandbox, pr, contentDS.createSubDesignSystem())(pkg)
+        infoForPackage(sandbox, json, contentDS.createSubDesignSystem())(pkg)
       })
     },
   }
@@ -43,7 +47,7 @@ const makePlugin = (utils: PluginUtils) => {
   return customPlugin
 }
 
-const infoForPackage  = (sandbox: Sandbox, pr: PR_repository_pullRequest, ds: DesignSystem) => (pkg: PackageInfo) => {
+const infoForPackage  = (sandbox: Sandbox, pr: DTBotJSON, ds: DesignSystem) => (pkg: PkgInfo) => {
   let toDownload = 1
   let downloaded = 0
 
@@ -75,7 +79,7 @@ const infoForPackage  = (sandbox: Sandbox, pr: PR_repository_pullRequest, ds: De
           a.onclick = async (e) => {
             e.preventDefault()
 
-            const testFile = `https://rawcdn.githack.com/DefinitelyTyped/DefinitelyTyped/${pr.headRefOid}/${t.path}`
+            const testFile = `https://rawcdn.githack.com/DefinitelyTyped/DefinitelyTyped/${pr.headCommitOid}/${t.path}`
             const res =  await fetch(testFile)
             const text = await res.text()
             sandbox.setText(text)
@@ -87,7 +91,7 @@ const infoForPackage  = (sandbox: Sandbox, pr: PR_repository_pullRequest, ds: De
 
   refreshUI()
 
-  const root = `https://rawcdn.githack.com/DefinitelyTyped/DefinitelyTyped/${pr.headRefOid}/types/${pkg.name}/index.d.ts`
+  const root = `https://rawcdn.githack.com/DefinitelyTyped/DefinitelyTyped/${pr.headCommitOid}/types/${pkg.name}/index.d.ts`
   const fileMap = {}
   getFile(root)
   return
@@ -119,8 +123,8 @@ const infoForPackage  = (sandbox: Sandbox, pr: PR_repository_pullRequest, ds: De
 
 
 function showEmptyScreen(ds: DesignSystem) {
-  ds.subtitle("Setup issue")
-  ds.p("You somehow have lost the param telling this plugin which DT Pull Request number you want to look at. You can set it manually by getting the number, and adding <code>dtPR=112233</code> to the URL of this page, then re-load.")
+  ds.subtitle("Not set up")
+  ds.p("If this is your first time, welcome! This extension requires a DefinitelyTyped PR number to get started, to get set up, go to the DefinitelyTyped.")
 }
 
 export default makePlugin
