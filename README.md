@@ -1,17 +1,21 @@
-## TypeScript Playground Plugin
+## DT Pull Request Reviewer Plugin
 
-My new plugin for the TypeScript playground.
+This is a plugin for the TypeScript Playground which makes it easier to review Pull Requests to DefinitelyTyped.
+
+This plugin will install the new version of the types from the PR into the playground, giving you the chance to `import` them and decide if it acts like you think it does.
+
+<img src="./screenshots/screenshot.png">
 
 ## Running this plugin
 
-- [Click this link](https://www.typescriptlang.org/play?install-plugin=[name]) to install
+- [Click this link](https://www.typescriptlang.org/play?install-plugin=playground-dt-review) to install
 
 or
 
 - Open up the TypeScript Playground
 - Go the "Plugins" in the sidebar
 - Look for "Plugins from npm"
-- Add "[name]"
+- Add "playground-dt-review"
 - Reload the browser
 
 Then it will show up as a tab in the sidebar.
