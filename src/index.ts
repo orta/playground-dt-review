@@ -97,8 +97,12 @@ const infoForPackage  = (sandbox: Sandbox, pr: DTBotJSON, ds: DesignSystem) => (
   return
 
   async function getFile(file: string) {
-    const localName = file.split(`/types/${pkg.name}`)[1]
-    const monacoPath = `file:///node_modules/${pkg.name}/${localName}`
+    const toMonacoPath = (name: string) => {
+        const localName = name.split(`/types/${pkg.name}`)[1]
+        return `file:///node_modules/${pkg.name}/${localName}`
+    }
+
+    const monacoPath = toMonacoPath(file)
 
     const res =  await fetch(file)
     const text = await res.text()
@@ -110,7 +114,15 @@ const infoForPackage  = (sandbox: Sandbox, pr: DTBotJSON, ds: DesignSystem) => (
     fileMap[monacoPath] = text
     sandbox.addLibraryToRuntime(text, monacoPath)
 
-    const filesToDownload = filesToLookAt.filter(f => f.fileName.startsWith("."))
+    // Ensures we don't keep re-downloading the same files
+    const filesToDownload = filesToLookAt.filter(f => {
+      const notLocal = f.fileName.startsWith(".") 
+      const newURL = new URL(f.fileName, file)
+      const address = newURL.toString() + ".d.ts"
+      const newMonacoPath = toMonacoPath(address)
+      return !fileMap[newMonacoPath] && notLocal
+    })
+
     toDownload += filesToDownload.length
     refreshUI()
     filesToDownload.forEach(f => {
