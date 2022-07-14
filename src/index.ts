@@ -99,7 +99,7 @@ const infoForPackage  = (sandbox: Sandbox, pr: DTBotJSON, ds: DesignSystem) => (
   async function getFile(file: string) {
     const toMonacoPath = (name: string) => {
         const localName = name.split(`/types/${pkg.name}`)[1]
-        return `file:///node_modules/${pkg.name}/${localName}`
+        return `/node_modules/${pkg.name}/${localName}`
     }
 
     const monacoPath = toMonacoPath(file)
