@@ -13,7 +13,7 @@ export declare type SandboxConfig = {
     text: string;
     /** @deprecated */
     useJavaScript?: boolean;
-    /** The default file for the plaayground  */
+    /** The default file for the playground  */
     filetype: "js" | "ts" | "d.ts";
     /** Compiler options which are automatically just forwarded on */
     compilerOptions: CompilerOptions;
@@ -27,6 +27,8 @@ export declare type SandboxConfig = {
     suppressAutomaticallyGettingDefaultText?: true;
     /** Suppress setting compiler options from the compiler flags from query params */
     suppressAutomaticallyGettingCompilerFlags?: true;
+    /** Optional path to TypeScript worker wrapper class script, see https://github.com/microsoft/monaco-typescript/pull/65  */
+    customTypeScriptWorkerPath?: string;
     /** Logging system */
     logger: {
         log: (...args: any[]) => void;
@@ -45,8 +47,8 @@ export declare function defaultPlaygroundSettings(): {
     text: string;
     /** @deprecated */
     useJavaScript?: boolean | undefined;
-    /** The default file for the plaayground  */
-    filetype: "d.ts" | "js" | "ts";
+    /** The default file for the playground  */
+    filetype: "js" | "ts" | "d.ts";
     /** Compiler options which are automatically just forwarded on */
     compilerOptions: import("monaco-editor").languages.typescript.CompilerOptions;
     /** Optional monaco settings overrides */
@@ -59,6 +61,8 @@ export declare function defaultPlaygroundSettings(): {
     suppressAutomaticallyGettingDefaultText?: true | undefined;
     /** Suppress setting compiler options from the compiler flags from query params */
     suppressAutomaticallyGettingCompilerFlags?: true | undefined;
+    /** Optional path to TypeScript worker wrapper class script, see https://github.com/microsoft/monaco-typescript/pull/65  */
+    customTypeScriptWorkerPath?: string | undefined;
     /** Logging system */
     logger: {
         log: (...args: any[]) => void;
@@ -82,6 +86,7 @@ export declare const createTypeScriptSandbox: (partialConfig: Partial<SandboxCon
         supportTwoslashCompilerOptions: boolean;
         suppressAutomaticallyGettingDefaultText?: true | undefined;
         suppressAutomaticallyGettingCompilerFlags?: true | undefined;
+        customTypeScriptWorkerPath?: string | undefined;
         logger: {
             log: (...args: any[]) => void;
             error: (...args: any[]) => void;
@@ -91,7 +96,7 @@ export declare const createTypeScriptSandbox: (partialConfig: Partial<SandboxCon
         domID: string;
     };
     /** A list of TypeScript versions you can use with the TypeScript sandbox */
-    supportedVersions: readonly ["4.3.0-beta", "4.2.3", "4.1.5", "4.0.5", "3.9.7", "3.8.3", "3.7.5", "3.6.3", "3.5.1", "3.3.3", "3.1.6", "3.0.1", "2.8.1", "2.7.2", "2.4.1"];
+    supportedVersions: readonly ["4.8.0-beta", "4.7.4", "4.6.4", "4.5.5", "4.4.4", "4.3.5", "4.2.3", "4.1.5", "4.0.5", "3.9.7", "3.8.3", "3.7.5", "3.6.3", "3.5.1", "3.3.3", "3.1.6", "3.0.1", "2.8.1", "2.7.2", "2.4.1"];
     /** The monaco editor instance */
     editor: import("monaco-editor").editor.IStandaloneCodeEditor;
     /** Either "typescript" or "javascript" depending on your config */
@@ -133,7 +138,7 @@ export declare const createTypeScriptSandbox: (partialConfig: Partial<SandboxCon
      * TODO: It would be good to create an easy way to have a single program instance which is updated for you
      * when the monaco model changes.
      */
-    setupTSVFS: (fsMapAdditions?: Map<string, string> | undefined) => Promise<{
+    setupTSVFS: (fsMapAdditions?: Map<string, string>) => Promise<{
         program: import("typescript").Program;
         system: import("typescript").System;
         host: {
@@ -240,15 +245,21 @@ export declare const createTypeScriptSandbox: (partialConfig: Partial<SandboxCon
     /** A copy of lzstring, which is used to archive/unarchive code */
     // lzstring: typeof lzstring;
     /** Returns compiler options found in the params of the current page */
-    createURLQueryWithCompilerOptions: (sandbox: any, paramOverrides?: any) => string;
-    /** Returns compiler options in the source code using twoslash notation */
+    createURLQueryWithCompilerOptions: (_sandbox: any, paramOverrides?: any) => string;
+    /**
+     * @deprecated Use `getTwoSlashCompilerOptions` instead.
+     *
+     * Returns compiler options in the source code using twoslash notation
+     */
     getTwoSlashComplierOptions: (code: string) => any;
+    /** Returns compiler options in the source code using twoslash notation */
+    getTwoSlashCompilerOptions: (code: string) => any;
     /** Gets to the current monaco-language, this is how you talk to the background webworkers */
     languageServiceDefaults: import("monaco-editor").languages.typescript.LanguageServiceDefaults;
     /** The path which represents the current file using the current compiler options */
     filepath: string;
     /** Adds a file to the vfs used by the editor */
-    addLibraryToRuntime: (code: string, path: string) => void;
+    addLibraryToRuntime: (code: string, _path: string) => void;
 };
 export declare type Sandbox = ReturnType<typeof createTypeScriptSandbox>;
 export {};

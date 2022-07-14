@@ -48,6 +48,7 @@ export declare const setupPlayground: (sandbox: Sandbox, monaco: Monaco, config:
         copyForChatWithPreview: (e: React.MouseEvent<Element, MouseEvent>) => boolean;
         openInTSAST: () => void;
         openInBugWorkbench: () => void;
+        openInVSCodeDev: () => void;
         exportAsTweet: () => void;
     };
     // ui: import("./createUI").UI;
