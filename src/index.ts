@@ -4,11 +4,8 @@ import type {  DTBotJSON, PkgInfo } from "./dt-mergebot-types"
 import { Sandbox } from "./vendor/sandbox"
 
 const dev = false
-const url = dev ? "http://localhost:7071/" : "https://dtmergebot.azurewebsites.net/"
-// We use `code` as a way to disallow people from arbitrary calling our functions on
-// this API. However, in this case it is OK for it to be public.
-const extraParams = dev ? "" : "&code=SAaE6vParL2N6JCQoG9iA3TZHGhDNsr61aZjF6IF2pAXy2YYaZnm1w=="
-const dtBotInfo = (prNum: number) => fetch(`${url}api/Playground-Info?number=${prNum}${extraParams}`)
+const url = dev ? "http://localhost:7071/" : "https://dtmergebot2.azurewebsites.net/"
+const dtBotInfo = (prNum: number) => fetch(`${url}api/Playground-Info?number=${prNum}`)
 
 const makePlugin = (utils: PluginUtils) => {
   const customPlugin: PlaygroundPlugin = {
@@ -99,7 +96,7 @@ const infoForPackage  = (sandbox: Sandbox, pr: DTBotJSON, ds: DesignSystem) => (
   async function getFile(file: string) {
     const toMonacoPath = (name: string) => {
         const localName = name.split(`/types/${pkg.name}`)[1]
-        return `/node_modules/${pkg.name}/${localName}`
+        return `/node_modules/${pkg.name}/${localName}`.replace(/\/+/g, "/")
     }
 
     const monacoPath = toMonacoPath(file)
